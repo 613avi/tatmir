@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="he">
+<html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>תצוגה נקייה</title>
+    <title>תצוגת תמונה נקייה</title>
     <style>
         body, html {
             margin: 0;
@@ -15,7 +15,6 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            cursor: pointer; /* מראה למשתמש שניתן ללחוץ */
         }
 
         img {
@@ -24,41 +23,70 @@
             object-fit: contain;
         }
 
-        /* הודעה קטנה שנעלמת כדי שהמשתמש ידע מה לעשות */
-        .instruction {
+        /* עיצוב הכפתור */
+        #fullscreen-btn {
             position: fixed;
-            top: 20px;
+            bottom: 30px;
             left: 50%;
             transform: translateX(-50%);
-            background: rgba(0,0,0,0.5);
+            padding: 12px 25px;
+            background-color: #ff4500;
             color: white;
-            padding: 10px 20px;
-            border-radius: 20px;
+            border: none;
+            border-radius: 50px;
             font-family: sans-serif;
-            pointer-events: none; /* שלא יפריע ללחיצה */
-            transition: opacity 1s;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transition: opacity 0.3s, visibility 0.3s;
+            z-index: 1000;
+        }
+
+        /* מחלקה להסתרת הכפתור */
+        .hidden {
+            opacity: 0;
+            visibility: hidden;
         }
     </style>
 </head>
-<body onclick="toggleFullscreen()">
+<body>
 
-    <div class="instruction" id="guide">לחץ בכל מקום למסך מלא</div>
-    
-    <img src="1.jpg" alt="לוגו">
+    <img src="1.jpg" alt="תמונה">
+
+    <button id="fullscreen-btn" onclick="goFullscreen()">הצג מסך מלא</button>
 
     <script>
-        function toggleFullscreen() {
-            if (!document.fullscreenElement) {
-                document.documentElement.requestFullscreen().catch(err => {
-                    console.log(`Error: ${err.message}`);
-                });
-                // העלמת ההוראה לאחר לחיצה
-                document.getElementById('guide').style.opacity = '0';
-            } else {
-                document.exitFullscreen();
-                document.getElementById('guide').style.opacity = '1';
+        const btn = document.getElementById('fullscreen-btn');
+
+        function goFullscreen() {
+            let elem = document.documentElement;
+            if (elem.requestFullscreen) {
+                elem.requestFullscreen();
+            } else if (elem.webkitRequestFullscreen) { /* Safari */
+                elem.webkitRequestFullscreen();
+            } else if (elem.msRequestFullscreen) { /* IE11 */
+                elem.msRequestFullscreen();
             }
         }
+
+        // האזנה לשינוי במצב המסך כדי להסתיר/להציג את הכפתור
+        document.addEventListener('fullscreenchange', () => {
+            if (document.fullscreenElement) {
+                btn.classList.add('hidden'); // מסתיר את הכפתור כשבמסך מלא
+            } else {
+                btn.classList.remove('hidden'); // מחזיר את הכפתור כשיוצאים
+            }
+        });
+
+        /* תמיכה בדפדפנים ישנים */
+        document.addEventListener('webkitfullscreenchange', () => {
+            if (document.webkitFullscreenElement) {
+                btn.classList.add('hidden');
+            } else {
+                btn.classList.remove('hidden');
+            }
+        });
     </script>
 
 </body>
