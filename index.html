@@ -1,84 +1,62 @@
 <!DOCTYPE html>
-<html lang="he" dir="rtl">
+<html lang="he">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>תצוגת לוגו במסך מלא</title>
+    <title>תצוגה נקייה</title>
     <style>
-        /* הגדרות בסיסיות למילוי כל שטח הדפדפן */
         body, html {
             margin: 0;
             padding: 0;
             width: 100%;
             height: 100%;
-            overflow: hidden; /* מונע פסי גלילה */
+            overflow: hidden;
+            background-color: #ffffff;
             display: flex;
             justify-content: center;
             align-items: center;
-            background-color: #ffffff; /* רקע לבן נקי */
-            font-family: sans-serif;
+            cursor: pointer; /* מראה למשתמש שניתן ללחוץ */
         }
 
-        /* הגדרות התמונה */
         img {
-            max-width: 90%; /* משאיר מעט רווח מהקצוות ליופי */
-            max-height: 90vh;
-            object-fit: contain; /* שומר על יחס גובה-רוחב */
-            transition: transform 0.3s ease;
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
         }
 
-        /* עיצוב לחצן המסך המלא */
-        #fullscreen-btn {
+        /* הודעה קטנה שנעלמת כדי שהמשתמש ידע מה לעשות */
+        .instruction {
             position: fixed;
-            bottom: 20px;
-            right: 20px;
-            padding: 10px 20px;
-            background-color: #ff4500; /* צבע כתום שתואם ללוגו */
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.5);
             color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: bold;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            z-index: 100;
-            transition: background-color 0.2s;
-        }
-
-        #fullscreen-btn:hover {
-            background-color: #e03e00;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-family: sans-serif;
+            pointer-events: none; /* שלא יפריע ללחיצה */
+            transition: opacity 1s;
         }
     </style>
 </head>
-<body>
+<body onclick="toggleFullscreen()">
 
-    <img src="לוגו-4 (1).png" alt="לוגו" id="myImage">
-
-    <button id="fullscreen-btn" onclick="toggleFullscreen()">לחץ למסך מלא</button>
+    <div class="instruction" id="guide">לחץ בכל מקום למסך מלא</div>
+    
+    <img src="לוגו-4 (1).png" alt="לוגו">
 
     <script>
         function toggleFullscreen() {
-            let elem = document.documentElement;
-
             if (!document.fullscreenElement) {
-                // כניסה למצב מסך מלא
-                if (elem.requestFullscreen) {
-                    elem.requestFullscreen();
-                } else if (elem.webkitRequestFullscreen) { /* Safari */
-                    elem.webkitRequestFullscreen();
-                } else if (elem.msRequestFullscreen) { /* IE11 */
-                    elem.msRequestFullscreen();
-                }
-                document.getElementById('fullscreen-btn').innerText = "צא ממסך מלא";
+                document.documentElement.requestFullscreen().catch(err => {
+                    console.log(`Error: ${err.message}`);
+                });
+                // העלמת ההוראה לאחר לחיצה
+                document.getElementById('guide').style.opacity = '0';
             } else {
-                // יציאה ממצב מסך מלא
-                if (document.exitFullscreen) {
-                    document.exitFullscreen();
-                } else if (document.webkitExitFullscreen) {
-                    document.webkitExitFullscreen();
-                } else if (document.msExitFullscreen) {
-                    document.msExitFullscreen();
-                }
-                document.getElementById('fullscreen-btn').innerText = "לחץ למסך מלא";
+                document.exitFullscreen();
+                document.getElementById('guide').style.opacity = '1';
             }
         }
     </script>
