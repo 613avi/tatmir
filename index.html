@@ -1,27 +1,87 @@
 <!DOCTYPE html>
-<html lang="he">
+<html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>הצגת תמונה</title>
+    <title>תצוגת לוגו במסך מלא</title>
     <style>
-        body {
+        /* הגדרות בסיסיות למילוי כל שטח הדפדפן */
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden; /* מונע פסי גלילה */
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            margin: 0;
-            background-color: #f0f0f0;
+            background-color: #ffffff; /* רקע לבן נקי */
+            font-family: sans-serif;
         }
+
+        /* הגדרות התמונה */
         img {
-            max-width: 100%;
-            height: auto;
+            max-width: 90%; /* משאיר מעט רווח מהקצוות ליופי */
+            max-height: 90vh;
+            object-fit: contain; /* שומר על יחס גובה-רוחב */
+            transition: transform 0.3s ease;
+        }
+
+        /* עיצוב לחצן המסך המלא */
+        #fullscreen-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            background-color: #ff4500; /* צבע כתום שתואם ללוגו */
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            z-index: 100;
+            transition: background-color 0.2s;
+        }
+
+        #fullscreen-btn:hover {
+            background-color: #e03e00;
         }
     </style>
 </head>
 <body>
 
-    <img src="לוגו-4 (1).png" alt="לוגו">
+    <img src="לוגו-4 (1).png" alt="לוגו" id="myImage">
+
+    <button id="fullscreen-btn" onclick="toggleFullscreen()">לחץ למסך מלא</button>
+
+    <script>
+        function toggleFullscreen() {
+            let elem = document.documentElement;
+
+            if (!document.fullscreenElement) {
+                // כניסה למצב מסך מלא
+                if (elem.requestFullscreen) {
+                    elem.requestFullscreen();
+                } else if (elem.webkitRequestFullscreen) { /* Safari */
+                    elem.webkitRequestFullscreen();
+                } else if (elem.msRequestFullscreen) { /* IE11 */
+                    elem.msRequestFullscreen();
+                }
+                document.getElementById('fullscreen-btn').innerText = "צא ממסך מלא";
+            } else {
+                // יציאה ממצב מסך מלא
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
+                } else if (document.msExitFullscreen) {
+                    document.msExitFullscreen();
+                }
+                document.getElementById('fullscreen-btn').innerText = "לחץ למסך מלא";
+            }
+        }
+    </script>
 
 </body>
 </html>
